@@ -24,7 +24,6 @@ export class MovieService {
   async getMovies(): Promise<MovieReponseDto[]> {
     try {
       const movies = await firstValueFrom(this.liteflixService.getMovies());
-      console.log(movies);
       return movies;
     } catch (err) {
       this.logger.error('There was an error getting movies');

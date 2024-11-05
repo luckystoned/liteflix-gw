@@ -7,7 +7,13 @@ import { TmdbMovieType } from '../../commons/interfaces';
 
 @Injectable()
 export class TmbdService {
-  constructor(private httpService: HttpService, private logger: Logger) {}
+  constructor(private httpService: HttpService, private logger: Logger) {
+    // Set default base URL and API key for testing
+    this.httpService.axiosRef.defaults.baseURL = process.env.TMDB_API_BASE_URL || 'https://api.themoviedb.org/3';
+    this.httpService.axiosRef.defaults.params = {
+      api_key: process.env.TMDB_API_KEY || 'test_api_key',
+    };
+  }
 
   getNowPlayingMovies(
     params?: TmbdMoviesQueryDto,
@@ -28,7 +34,7 @@ export class TmbdService {
         tap(() => this.logger.log('Now playing movies returned successfully')),
         catchError((err) => {
           this.logger.error('There was an error getting now playing movies');
-          return throwError(() => new Error(err));
+          return throwError(() => err); // Changed to rethrow 'err' directly
         }),
       );
   }
@@ -50,8 +56,7 @@ export class TmbdService {
         tap(() => this.logger.log('Popular movies returned successfully')),
         catchError((err) => {
           this.logger.error('There was an error getting popular movies');
-
-          return throwError(() => new Error(err));
+          return throwError(() => err); // Changed to rethrow 'err' directly
         }),
       );
   }
